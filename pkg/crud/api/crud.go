@@ -203,10 +203,26 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.APIQuery, error) {
 			return nil, fmt.Errorf("invalid api field")
 		}
 	}
+	if conds.ServiceName != nil {
+		switch conds.GetServiceName().GetOp() {
+		case cruder.LIKE:
+			stm.Where(api.ServiceName(conds.GetServiceName().GetValue()))
+		default:
+			return nil, fmt.Errorf("invalid api field")
+		}
+	}
 	if conds.Method != nil {
 		switch conds.GetMethod().GetOp() {
 		case cruder.EQ:
 			stm.Where(api.Method(npool.Method(conds.GetMethod().GetValue()).String()))
+		default:
+			return nil, fmt.Errorf("invalid api field")
+		}
+	}
+	if conds.Path != nil {
+		switch conds.GetPath().GetOp() {
+		case cruder.LIKE:
+			stm.Where(api.Path(conds.GetPath().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid api field")
 		}
