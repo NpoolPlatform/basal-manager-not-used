@@ -9,19 +9,19 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/basal/mgr/v1/api"
 )
 
-// Api holds the schema definition for the Api entity.
-type Api struct {
+// API holds the schema definition for the API entity.
+type API struct {
 	ent.Schema
 }
 
-func (Api) Mixin() []ent.Mixin {
+func (API) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-// Fields of the Api.
-func (Api) Fields() []ent.Field {
+// Fields of the API.
+func (API) Fields() []ent.Field {
 	return []ent.Field{
 		field.
 			UUID("id", uuid.UUID{}).
@@ -66,7 +66,7 @@ func (Api) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Api.
-func (Api) Edges() []ent.Edge {
+// Edges of the API.
+func (API) Edges() []ent.Edge {
 	return nil
 }

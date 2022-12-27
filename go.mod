@@ -6,12 +6,10 @@ require (
 	entgo.io/ent v0.11.2
 	github.com/NpoolPlatform/go-service-framework v0.0.0-20220927113434-7c153f087a8c
 	github.com/NpoolPlatform/libent-cruder v0.0.0-20220621110548-8f3f8049ecc5
-	github.com/NpoolPlatform/message v0.0.0-20221226102333-e0d1e1633390
+	github.com/NpoolPlatform/message v0.0.0-20221226140753-cae0c61b1d67
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
-	github.com/shopspring/decimal v1.3.1
-	github.com/streadway/amqp v1.0.0
 	github.com/stretchr/testify v1.7.1
 	github.com/urfave/cli/v2 v2.4.0
 	go.opentelemetry.io/otel v1.8.0
@@ -82,6 +80,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.11.0 // indirect
+	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect

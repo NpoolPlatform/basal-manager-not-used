@@ -72,7 +72,7 @@ func (s *Server) CreateAPIs(ctx context.Context, in *npool.CreateAPIsRequest) (*
 		return &npool.CreateAPIsResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	err = duplicate(in.GetInfos())
+	err = validateMany(in.GetInfos())
 	if err != nil {
 		return &npool.CreateAPIsResponse{}, err
 	}

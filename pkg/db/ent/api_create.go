@@ -15,7 +15,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// APICreate is the builder for creating a Api entity.
+// APICreate is the builder for creating a API entity.
 type APICreate struct {
 	config
 	mutation *APIMutation
@@ -202,11 +202,11 @@ func (ac *APICreate) Mutation() *APIMutation {
 	return ac.mutation
 }
 
-// Save creates the Api in the database.
-func (ac *APICreate) Save(ctx context.Context) (*Api, error) {
+// Save creates the API in the database.
+func (ac *APICreate) Save(ctx context.Context) (*API, error) {
 	var (
 		err  error
-		node *Api
+		node *API
 	)
 	if err := ac.defaults(); err != nil {
 		return nil, err
@@ -243,7 +243,7 @@ func (ac *APICreate) Save(ctx context.Context) (*Api, error) {
 		if err != nil {
 			return nil, err
 		}
-		nv, ok := v.(*Api)
+		nv, ok := v.(*API)
 		if !ok {
 			return nil, fmt.Errorf("unexpected node type %T returned from APIMutation", v)
 		}
@@ -253,7 +253,7 @@ func (ac *APICreate) Save(ctx context.Context) (*Api, error) {
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ac *APICreate) SaveX(ctx context.Context) *Api {
+func (ac *APICreate) SaveX(ctx context.Context) *API {
 	v, err := ac.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -346,18 +346,18 @@ func (ac *APICreate) defaults() error {
 // check runs all checks and user-defined validators on the builder.
 func (ac *APICreate) check() error {
 	if _, ok := ac.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Api.created_at"`)}
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "API.created_at"`)}
 	}
 	if _, ok := ac.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Api.updated_at"`)}
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "API.updated_at"`)}
 	}
 	if _, ok := ac.mutation.DeletedAt(); !ok {
-		return &ValidationError{Name: "deleted_at", err: errors.New(`ent: missing required field "Api.deleted_at"`)}
+		return &ValidationError{Name: "deleted_at", err: errors.New(`ent: missing required field "API.deleted_at"`)}
 	}
 	return nil
 }
 
-func (ac *APICreate) sqlSave(ctx context.Context) (*Api, error) {
+func (ac *APICreate) sqlSave(ctx context.Context) (*API, error) {
 	_node, _spec := ac.createSpec()
 	if err := sqlgraph.CreateNode(ctx, ac.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
@@ -375,9 +375,9 @@ func (ac *APICreate) sqlSave(ctx context.Context) (*Api, error) {
 	return _node, nil
 }
 
-func (ac *APICreate) createSpec() (*Api, *sqlgraph.CreateSpec) {
+func (ac *APICreate) createSpec() (*API, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Api{config: ac.config}
+		_node = &API{config: ac.config}
 		_spec = &sqlgraph.CreateSpec{
 			Table: api.Table,
 			ID: &sqlgraph.FieldSpec{
@@ -493,7 +493,7 @@ func (ac *APICreate) createSpec() (*Api, *sqlgraph.CreateSpec) {
 // OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
 // of the `INSERT` statement. For example:
 //
-//	client.Api.Create().
+//	client.API.Create().
 //		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
@@ -502,14 +502,14 @@ func (ac *APICreate) createSpec() (*Api, *sqlgraph.CreateSpec) {
 //		).
 //		// Override some of the fields with custom
 //		// update values.
-//		Update(func(u *ent.ApiUpsert) {
+//		Update(func(u *ent.APIUpsert) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 //
-func (ac *APICreate) OnConflict(opts ...sql.ConflictOption) *ApiUpsertOne {
+func (ac *APICreate) OnConflict(opts ...sql.ConflictOption) *APIUpsertOne {
 	ac.conflict = opts
-	return &ApiUpsertOne{
+	return &APIUpsertOne{
 		create: ac,
 	}
 }
@@ -517,242 +517,242 @@ func (ac *APICreate) OnConflict(opts ...sql.ConflictOption) *ApiUpsertOne {
 // OnConflictColumns calls `OnConflict` and configures the columns
 // as conflict target. Using this option is equivalent to using:
 //
-//	client.Api.Create().
+//	client.API.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
 //
-func (ac *APICreate) OnConflictColumns(columns ...string) *ApiUpsertOne {
+func (ac *APICreate) OnConflictColumns(columns ...string) *APIUpsertOne {
 	ac.conflict = append(ac.conflict, sql.ConflictColumns(columns...))
-	return &ApiUpsertOne{
+	return &APIUpsertOne{
 		create: ac,
 	}
 }
 
 type (
-	// ApiUpsertOne is the builder for "upsert"-ing
-	//  one Api node.
-	ApiUpsertOne struct {
+	// APIUpsertOne is the builder for "upsert"-ing
+	//  one API node.
+	APIUpsertOne struct {
 		create *APICreate
 	}
 
-	// ApiUpsert is the "OnConflict" setter.
-	ApiUpsert struct {
+	// APIUpsert is the "OnConflict" setter.
+	APIUpsert struct {
 		*sql.UpdateSet
 	}
 )
 
 // SetCreatedAt sets the "created_at" field.
-func (u *ApiUpsert) SetCreatedAt(v uint32) *ApiUpsert {
+func (u *APIUpsert) SetCreatedAt(v uint32) *APIUpsert {
 	u.Set(api.FieldCreatedAt, v)
 	return u
 }
 
 // UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateCreatedAt() *ApiUpsert {
+func (u *APIUpsert) UpdateCreatedAt() *APIUpsert {
 	u.SetExcluded(api.FieldCreatedAt)
 	return u
 }
 
 // AddCreatedAt adds v to the "created_at" field.
-func (u *ApiUpsert) AddCreatedAt(v uint32) *ApiUpsert {
+func (u *APIUpsert) AddCreatedAt(v uint32) *APIUpsert {
 	u.Add(api.FieldCreatedAt, v)
 	return u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (u *ApiUpsert) SetUpdatedAt(v uint32) *ApiUpsert {
+func (u *APIUpsert) SetUpdatedAt(v uint32) *APIUpsert {
 	u.Set(api.FieldUpdatedAt, v)
 	return u
 }
 
 // UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateUpdatedAt() *ApiUpsert {
+func (u *APIUpsert) UpdateUpdatedAt() *APIUpsert {
 	u.SetExcluded(api.FieldUpdatedAt)
 	return u
 }
 
 // AddUpdatedAt adds v to the "updated_at" field.
-func (u *ApiUpsert) AddUpdatedAt(v uint32) *ApiUpsert {
+func (u *APIUpsert) AddUpdatedAt(v uint32) *APIUpsert {
 	u.Add(api.FieldUpdatedAt, v)
 	return u
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (u *ApiUpsert) SetDeletedAt(v uint32) *ApiUpsert {
+func (u *APIUpsert) SetDeletedAt(v uint32) *APIUpsert {
 	u.Set(api.FieldDeletedAt, v)
 	return u
 }
 
 // UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateDeletedAt() *ApiUpsert {
+func (u *APIUpsert) UpdateDeletedAt() *APIUpsert {
 	u.SetExcluded(api.FieldDeletedAt)
 	return u
 }
 
 // AddDeletedAt adds v to the "deleted_at" field.
-func (u *ApiUpsert) AddDeletedAt(v uint32) *ApiUpsert {
+func (u *APIUpsert) AddDeletedAt(v uint32) *APIUpsert {
 	u.Add(api.FieldDeletedAt, v)
 	return u
 }
 
 // SetProtocol sets the "protocol" field.
-func (u *ApiUpsert) SetProtocol(v string) *ApiUpsert {
+func (u *APIUpsert) SetProtocol(v string) *APIUpsert {
 	u.Set(api.FieldProtocol, v)
 	return u
 }
 
 // UpdateProtocol sets the "protocol" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateProtocol() *ApiUpsert {
+func (u *APIUpsert) UpdateProtocol() *APIUpsert {
 	u.SetExcluded(api.FieldProtocol)
 	return u
 }
 
 // ClearProtocol clears the value of the "protocol" field.
-func (u *ApiUpsert) ClearProtocol() *ApiUpsert {
+func (u *APIUpsert) ClearProtocol() *APIUpsert {
 	u.SetNull(api.FieldProtocol)
 	return u
 }
 
 // SetServiceName sets the "service_name" field.
-func (u *ApiUpsert) SetServiceName(v string) *ApiUpsert {
+func (u *APIUpsert) SetServiceName(v string) *APIUpsert {
 	u.Set(api.FieldServiceName, v)
 	return u
 }
 
 // UpdateServiceName sets the "service_name" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateServiceName() *ApiUpsert {
+func (u *APIUpsert) UpdateServiceName() *APIUpsert {
 	u.SetExcluded(api.FieldServiceName)
 	return u
 }
 
 // ClearServiceName clears the value of the "service_name" field.
-func (u *ApiUpsert) ClearServiceName() *ApiUpsert {
+func (u *APIUpsert) ClearServiceName() *APIUpsert {
 	u.SetNull(api.FieldServiceName)
 	return u
 }
 
 // SetMethod sets the "method" field.
-func (u *ApiUpsert) SetMethod(v string) *ApiUpsert {
+func (u *APIUpsert) SetMethod(v string) *APIUpsert {
 	u.Set(api.FieldMethod, v)
 	return u
 }
 
 // UpdateMethod sets the "method" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateMethod() *ApiUpsert {
+func (u *APIUpsert) UpdateMethod() *APIUpsert {
 	u.SetExcluded(api.FieldMethod)
 	return u
 }
 
 // ClearMethod clears the value of the "method" field.
-func (u *ApiUpsert) ClearMethod() *ApiUpsert {
+func (u *APIUpsert) ClearMethod() *APIUpsert {
 	u.SetNull(api.FieldMethod)
 	return u
 }
 
 // SetMethodName sets the "method_name" field.
-func (u *ApiUpsert) SetMethodName(v string) *ApiUpsert {
+func (u *APIUpsert) SetMethodName(v string) *APIUpsert {
 	u.Set(api.FieldMethodName, v)
 	return u
 }
 
 // UpdateMethodName sets the "method_name" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateMethodName() *ApiUpsert {
+func (u *APIUpsert) UpdateMethodName() *APIUpsert {
 	u.SetExcluded(api.FieldMethodName)
 	return u
 }
 
 // ClearMethodName clears the value of the "method_name" field.
-func (u *ApiUpsert) ClearMethodName() *ApiUpsert {
+func (u *APIUpsert) ClearMethodName() *APIUpsert {
 	u.SetNull(api.FieldMethodName)
 	return u
 }
 
 // SetPath sets the "path" field.
-func (u *ApiUpsert) SetPath(v string) *ApiUpsert {
+func (u *APIUpsert) SetPath(v string) *APIUpsert {
 	u.Set(api.FieldPath, v)
 	return u
 }
 
 // UpdatePath sets the "path" field to the value that was provided on create.
-func (u *ApiUpsert) UpdatePath() *ApiUpsert {
+func (u *APIUpsert) UpdatePath() *APIUpsert {
 	u.SetExcluded(api.FieldPath)
 	return u
 }
 
 // ClearPath clears the value of the "path" field.
-func (u *ApiUpsert) ClearPath() *ApiUpsert {
+func (u *APIUpsert) ClearPath() *APIUpsert {
 	u.SetNull(api.FieldPath)
 	return u
 }
 
 // SetExported sets the "exported" field.
-func (u *ApiUpsert) SetExported(v bool) *ApiUpsert {
+func (u *APIUpsert) SetExported(v bool) *APIUpsert {
 	u.Set(api.FieldExported, v)
 	return u
 }
 
 // UpdateExported sets the "exported" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateExported() *ApiUpsert {
+func (u *APIUpsert) UpdateExported() *APIUpsert {
 	u.SetExcluded(api.FieldExported)
 	return u
 }
 
 // ClearExported clears the value of the "exported" field.
-func (u *ApiUpsert) ClearExported() *ApiUpsert {
+func (u *APIUpsert) ClearExported() *APIUpsert {
 	u.SetNull(api.FieldExported)
 	return u
 }
 
 // SetPathPrefix sets the "path_prefix" field.
-func (u *ApiUpsert) SetPathPrefix(v string) *ApiUpsert {
+func (u *APIUpsert) SetPathPrefix(v string) *APIUpsert {
 	u.Set(api.FieldPathPrefix, v)
 	return u
 }
 
 // UpdatePathPrefix sets the "path_prefix" field to the value that was provided on create.
-func (u *ApiUpsert) UpdatePathPrefix() *ApiUpsert {
+func (u *APIUpsert) UpdatePathPrefix() *APIUpsert {
 	u.SetExcluded(api.FieldPathPrefix)
 	return u
 }
 
 // ClearPathPrefix clears the value of the "path_prefix" field.
-func (u *ApiUpsert) ClearPathPrefix() *ApiUpsert {
+func (u *APIUpsert) ClearPathPrefix() *APIUpsert {
 	u.SetNull(api.FieldPathPrefix)
 	return u
 }
 
 // SetDomains sets the "domains" field.
-func (u *ApiUpsert) SetDomains(v []string) *ApiUpsert {
+func (u *APIUpsert) SetDomains(v []string) *APIUpsert {
 	u.Set(api.FieldDomains, v)
 	return u
 }
 
 // UpdateDomains sets the "domains" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateDomains() *ApiUpsert {
+func (u *APIUpsert) UpdateDomains() *APIUpsert {
 	u.SetExcluded(api.FieldDomains)
 	return u
 }
 
 // ClearDomains clears the value of the "domains" field.
-func (u *ApiUpsert) ClearDomains() *ApiUpsert {
+func (u *APIUpsert) ClearDomains() *APIUpsert {
 	u.SetNull(api.FieldDomains)
 	return u
 }
 
 // SetDepracated sets the "depracated" field.
-func (u *ApiUpsert) SetDepracated(v bool) *ApiUpsert {
+func (u *APIUpsert) SetDepracated(v bool) *APIUpsert {
 	u.Set(api.FieldDepracated, v)
 	return u
 }
 
 // UpdateDepracated sets the "depracated" field to the value that was provided on create.
-func (u *ApiUpsert) UpdateDepracated() *ApiUpsert {
+func (u *APIUpsert) UpdateDepracated() *APIUpsert {
 	u.SetExcluded(api.FieldDepracated)
 	return u
 }
 
 // ClearDepracated clears the value of the "depracated" field.
-func (u *ApiUpsert) ClearDepracated() *ApiUpsert {
+func (u *APIUpsert) ClearDepracated() *APIUpsert {
 	u.SetNull(api.FieldDepracated)
 	return u
 }
@@ -760,7 +760,7 @@ func (u *ApiUpsert) ClearDepracated() *ApiUpsert {
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
-//	client.Api.Create().
+//	client.API.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
 //			sql.ResolveWith(func(u *sql.UpdateSet) {
@@ -769,7 +769,7 @@ func (u *ApiUpsert) ClearDepracated() *ApiUpsert {
 //		).
 //		Exec(ctx)
 //
-func (u *ApiUpsertOne) UpdateNewValues() *ApiUpsertOne {
+func (u *APIUpsertOne) UpdateNewValues() *APIUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
@@ -782,285 +782,285 @@ func (u *ApiUpsertOne) UpdateNewValues() *ApiUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.Api.Create().
+//  client.API.Create().
 //      OnConflict(sql.ResolveWithIgnore()).
 //      Exec(ctx)
 //
-func (u *ApiUpsertOne) Ignore() *ApiUpsertOne {
+func (u *APIUpsertOne) Ignore() *APIUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
 }
 
 // DoNothing configures the conflict_action to `DO NOTHING`.
 // Supported only by SQLite and PostgreSQL.
-func (u *ApiUpsertOne) DoNothing() *ApiUpsertOne {
+func (u *APIUpsertOne) DoNothing() *APIUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.DoNothing())
 	return u
 }
 
 // Update allows overriding fields `UPDATE` values. See the APICreate.OnConflict
 // documentation for more info.
-func (u *ApiUpsertOne) Update(set func(*ApiUpsert)) *ApiUpsertOne {
+func (u *APIUpsertOne) Update(set func(*APIUpsert)) *APIUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
-		set(&ApiUpsert{UpdateSet: update})
+		set(&APIUpsert{UpdateSet: update})
 	}))
 	return u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (u *ApiUpsertOne) SetCreatedAt(v uint32) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetCreatedAt(v uint32) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetCreatedAt(v)
 	})
 }
 
 // AddCreatedAt adds v to the "created_at" field.
-func (u *ApiUpsertOne) AddCreatedAt(v uint32) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) AddCreatedAt(v uint32) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.AddCreatedAt(v)
 	})
 }
 
 // UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateCreatedAt() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateCreatedAt() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateCreatedAt()
 	})
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (u *ApiUpsertOne) SetUpdatedAt(v uint32) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetUpdatedAt(v uint32) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetUpdatedAt(v)
 	})
 }
 
 // AddUpdatedAt adds v to the "updated_at" field.
-func (u *ApiUpsertOne) AddUpdatedAt(v uint32) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) AddUpdatedAt(v uint32) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.AddUpdatedAt(v)
 	})
 }
 
 // UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateUpdatedAt() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateUpdatedAt() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateUpdatedAt()
 	})
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (u *ApiUpsertOne) SetDeletedAt(v uint32) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetDeletedAt(v uint32) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetDeletedAt(v)
 	})
 }
 
 // AddDeletedAt adds v to the "deleted_at" field.
-func (u *ApiUpsertOne) AddDeletedAt(v uint32) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) AddDeletedAt(v uint32) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.AddDeletedAt(v)
 	})
 }
 
 // UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateDeletedAt() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateDeletedAt() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateDeletedAt()
 	})
 }
 
 // SetProtocol sets the "protocol" field.
-func (u *ApiUpsertOne) SetProtocol(v string) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetProtocol(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetProtocol(v)
 	})
 }
 
 // UpdateProtocol sets the "protocol" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateProtocol() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateProtocol() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateProtocol()
 	})
 }
 
 // ClearProtocol clears the value of the "protocol" field.
-func (u *ApiUpsertOne) ClearProtocol() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearProtocol() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearProtocol()
 	})
 }
 
 // SetServiceName sets the "service_name" field.
-func (u *ApiUpsertOne) SetServiceName(v string) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetServiceName(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetServiceName(v)
 	})
 }
 
 // UpdateServiceName sets the "service_name" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateServiceName() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateServiceName() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateServiceName()
 	})
 }
 
 // ClearServiceName clears the value of the "service_name" field.
-func (u *ApiUpsertOne) ClearServiceName() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearServiceName() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearServiceName()
 	})
 }
 
 // SetMethod sets the "method" field.
-func (u *ApiUpsertOne) SetMethod(v string) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetMethod(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetMethod(v)
 	})
 }
 
 // UpdateMethod sets the "method" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateMethod() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateMethod() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateMethod()
 	})
 }
 
 // ClearMethod clears the value of the "method" field.
-func (u *ApiUpsertOne) ClearMethod() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearMethod() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearMethod()
 	})
 }
 
 // SetMethodName sets the "method_name" field.
-func (u *ApiUpsertOne) SetMethodName(v string) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetMethodName(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetMethodName(v)
 	})
 }
 
 // UpdateMethodName sets the "method_name" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateMethodName() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateMethodName() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateMethodName()
 	})
 }
 
 // ClearMethodName clears the value of the "method_name" field.
-func (u *ApiUpsertOne) ClearMethodName() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearMethodName() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearMethodName()
 	})
 }
 
 // SetPath sets the "path" field.
-func (u *ApiUpsertOne) SetPath(v string) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetPath(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetPath(v)
 	})
 }
 
 // UpdatePath sets the "path" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdatePath() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdatePath() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdatePath()
 	})
 }
 
 // ClearPath clears the value of the "path" field.
-func (u *ApiUpsertOne) ClearPath() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearPath() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearPath()
 	})
 }
 
 // SetExported sets the "exported" field.
-func (u *ApiUpsertOne) SetExported(v bool) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetExported(v bool) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetExported(v)
 	})
 }
 
 // UpdateExported sets the "exported" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateExported() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateExported() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateExported()
 	})
 }
 
 // ClearExported clears the value of the "exported" field.
-func (u *ApiUpsertOne) ClearExported() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearExported() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearExported()
 	})
 }
 
 // SetPathPrefix sets the "path_prefix" field.
-func (u *ApiUpsertOne) SetPathPrefix(v string) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetPathPrefix(v string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetPathPrefix(v)
 	})
 }
 
 // UpdatePathPrefix sets the "path_prefix" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdatePathPrefix() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdatePathPrefix() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdatePathPrefix()
 	})
 }
 
 // ClearPathPrefix clears the value of the "path_prefix" field.
-func (u *ApiUpsertOne) ClearPathPrefix() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearPathPrefix() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearPathPrefix()
 	})
 }
 
 // SetDomains sets the "domains" field.
-func (u *ApiUpsertOne) SetDomains(v []string) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetDomains(v []string) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetDomains(v)
 	})
 }
 
 // UpdateDomains sets the "domains" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateDomains() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateDomains() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateDomains()
 	})
 }
 
 // ClearDomains clears the value of the "domains" field.
-func (u *ApiUpsertOne) ClearDomains() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearDomains() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearDomains()
 	})
 }
 
 // SetDepracated sets the "depracated" field.
-func (u *ApiUpsertOne) SetDepracated(v bool) *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) SetDepracated(v bool) *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.SetDepracated(v)
 	})
 }
 
 // UpdateDepracated sets the "depracated" field to the value that was provided on create.
-func (u *ApiUpsertOne) UpdateDepracated() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) UpdateDepracated() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateDepracated()
 	})
 }
 
 // ClearDepracated clears the value of the "depracated" field.
-func (u *ApiUpsertOne) ClearDepracated() *ApiUpsertOne {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertOne) ClearDepracated() *APIUpsertOne {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearDepracated()
 	})
 }
 
 // Exec executes the query.
-func (u *ApiUpsertOne) Exec(ctx context.Context) error {
+func (u *APIUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
 		return errors.New("ent: missing options for APICreate.OnConflict")
 	}
@@ -1068,18 +1068,18 @@ func (u *ApiUpsertOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (u *ApiUpsertOne) ExecX(ctx context.Context) {
+func (u *APIUpsertOne) ExecX(ctx context.Context) {
 	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ApiUpsertOne) ID(ctx context.Context) (id uuid.UUID, err error) {
+func (u *APIUpsertOne) ID(ctx context.Context) (id uuid.UUID, err error) {
 	if u.create.driver.Dialect() == dialect.MySQL {
 		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
 		// fields from the database since MySQL does not support the RETURNING clause.
-		return id, errors.New("ent: ApiUpsertOne.ID is not supported by MySQL driver. Use ApiUpsertOne.Exec instead")
+		return id, errors.New("ent: APIUpsertOne.ID is not supported by MySQL driver. Use APIUpsertOne.Exec instead")
 	}
 	node, err := u.create.Save(ctx)
 	if err != nil {
@@ -1089,7 +1089,7 @@ func (u *ApiUpsertOne) ID(ctx context.Context) (id uuid.UUID, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ApiUpsertOne) IDX(ctx context.Context) uuid.UUID {
+func (u *APIUpsertOne) IDX(ctx context.Context) uuid.UUID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -1097,17 +1097,17 @@ func (u *ApiUpsertOne) IDX(ctx context.Context) uuid.UUID {
 	return id
 }
 
-// APICreateBulk is the builder for creating many Api entities in bulk.
+// APICreateBulk is the builder for creating many API entities in bulk.
 type APICreateBulk struct {
 	config
 	builders []*APICreate
 	conflict []sql.ConflictOption
 }
 
-// Save creates the Api entities in the database.
-func (acb *APICreateBulk) Save(ctx context.Context) ([]*Api, error) {
+// Save creates the API entities in the database.
+func (acb *APICreateBulk) Save(ctx context.Context) ([]*API, error) {
 	specs := make([]*sqlgraph.CreateSpec, len(acb.builders))
-	nodes := make([]*Api, len(acb.builders))
+	nodes := make([]*API, len(acb.builders))
 	mutators := make([]Mutator, len(acb.builders))
 	for i := range acb.builders {
 		func(i int, root context.Context) {
@@ -1158,7 +1158,7 @@ func (acb *APICreateBulk) Save(ctx context.Context) ([]*Api, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acb *APICreateBulk) SaveX(ctx context.Context) []*Api {
+func (acb *APICreateBulk) SaveX(ctx context.Context) []*API {
 	v, err := acb.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -1182,7 +1182,7 @@ func (acb *APICreateBulk) ExecX(ctx context.Context) {
 // OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
 // of the `INSERT` statement. For example:
 //
-//	client.Api.CreateBulk(builders...).
+//	client.API.CreateBulk(builders...).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -1190,14 +1190,14 @@ func (acb *APICreateBulk) ExecX(ctx context.Context) {
 //		).
 //		// Override some of the fields with custom
 //		// update values.
-//		Update(func(u *ent.ApiUpsert) {
+//		Update(func(u *ent.APIUpsert) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 //
-func (acb *APICreateBulk) OnConflict(opts ...sql.ConflictOption) *ApiUpsertBulk {
+func (acb *APICreateBulk) OnConflict(opts ...sql.ConflictOption) *APIUpsertBulk {
 	acb.conflict = opts
-	return &ApiUpsertBulk{
+	return &APIUpsertBulk{
 		create: acb,
 	}
 }
@@ -1205,27 +1205,27 @@ func (acb *APICreateBulk) OnConflict(opts ...sql.ConflictOption) *ApiUpsertBulk 
 // OnConflictColumns calls `OnConflict` and configures the columns
 // as conflict target. Using this option is equivalent to using:
 //
-//	client.Api.Create().
+//	client.API.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
 //
-func (acb *APICreateBulk) OnConflictColumns(columns ...string) *ApiUpsertBulk {
+func (acb *APICreateBulk) OnConflictColumns(columns ...string) *APIUpsertBulk {
 	acb.conflict = append(acb.conflict, sql.ConflictColumns(columns...))
-	return &ApiUpsertBulk{
+	return &APIUpsertBulk{
 		create: acb,
 	}
 }
 
-// ApiUpsertBulk is the builder for "upsert"-ing
-// a bulk of Api nodes.
-type ApiUpsertBulk struct {
+// APIUpsertBulk is the builder for "upsert"-ing
+// a bulk of API nodes.
+type APIUpsertBulk struct {
 	create *APICreateBulk
 }
 
 // UpdateNewValues updates the mutable fields using the new values that
 // were set on create. Using this option is equivalent to using:
 //
-//	client.Api.Create().
+//	client.API.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
 //			sql.ResolveWith(func(u *sql.UpdateSet) {
@@ -1234,7 +1234,7 @@ type ApiUpsertBulk struct {
 //		).
 //		Exec(ctx)
 //
-func (u *ApiUpsertBulk) UpdateNewValues() *ApiUpsertBulk {
+func (u *APIUpsertBulk) UpdateNewValues() *APIUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
@@ -1250,285 +1250,285 @@ func (u *ApiUpsertBulk) UpdateNewValues() *ApiUpsertBulk {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Api.Create().
+//	client.API.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
 //
-func (u *ApiUpsertBulk) Ignore() *ApiUpsertBulk {
+func (u *APIUpsertBulk) Ignore() *APIUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
 }
 
 // DoNothing configures the conflict_action to `DO NOTHING`.
 // Supported only by SQLite and PostgreSQL.
-func (u *ApiUpsertBulk) DoNothing() *ApiUpsertBulk {
+func (u *APIUpsertBulk) DoNothing() *APIUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.DoNothing())
 	return u
 }
 
 // Update allows overriding fields `UPDATE` values. See the APICreateBulk.OnConflict
 // documentation for more info.
-func (u *ApiUpsertBulk) Update(set func(*ApiUpsert)) *ApiUpsertBulk {
+func (u *APIUpsertBulk) Update(set func(*APIUpsert)) *APIUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
-		set(&ApiUpsert{UpdateSet: update})
+		set(&APIUpsert{UpdateSet: update})
 	}))
 	return u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (u *ApiUpsertBulk) SetCreatedAt(v uint32) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetCreatedAt(v uint32) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetCreatedAt(v)
 	})
 }
 
 // AddCreatedAt adds v to the "created_at" field.
-func (u *ApiUpsertBulk) AddCreatedAt(v uint32) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) AddCreatedAt(v uint32) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.AddCreatedAt(v)
 	})
 }
 
 // UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateCreatedAt() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateCreatedAt() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateCreatedAt()
 	})
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (u *ApiUpsertBulk) SetUpdatedAt(v uint32) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetUpdatedAt(v uint32) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetUpdatedAt(v)
 	})
 }
 
 // AddUpdatedAt adds v to the "updated_at" field.
-func (u *ApiUpsertBulk) AddUpdatedAt(v uint32) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) AddUpdatedAt(v uint32) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.AddUpdatedAt(v)
 	})
 }
 
 // UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateUpdatedAt() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateUpdatedAt() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateUpdatedAt()
 	})
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (u *ApiUpsertBulk) SetDeletedAt(v uint32) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetDeletedAt(v uint32) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetDeletedAt(v)
 	})
 }
 
 // AddDeletedAt adds v to the "deleted_at" field.
-func (u *ApiUpsertBulk) AddDeletedAt(v uint32) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) AddDeletedAt(v uint32) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.AddDeletedAt(v)
 	})
 }
 
 // UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateDeletedAt() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateDeletedAt() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateDeletedAt()
 	})
 }
 
 // SetProtocol sets the "protocol" field.
-func (u *ApiUpsertBulk) SetProtocol(v string) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetProtocol(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetProtocol(v)
 	})
 }
 
 // UpdateProtocol sets the "protocol" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateProtocol() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateProtocol() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateProtocol()
 	})
 }
 
 // ClearProtocol clears the value of the "protocol" field.
-func (u *ApiUpsertBulk) ClearProtocol() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearProtocol() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearProtocol()
 	})
 }
 
 // SetServiceName sets the "service_name" field.
-func (u *ApiUpsertBulk) SetServiceName(v string) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetServiceName(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetServiceName(v)
 	})
 }
 
 // UpdateServiceName sets the "service_name" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateServiceName() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateServiceName() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateServiceName()
 	})
 }
 
 // ClearServiceName clears the value of the "service_name" field.
-func (u *ApiUpsertBulk) ClearServiceName() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearServiceName() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearServiceName()
 	})
 }
 
 // SetMethod sets the "method" field.
-func (u *ApiUpsertBulk) SetMethod(v string) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetMethod(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetMethod(v)
 	})
 }
 
 // UpdateMethod sets the "method" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateMethod() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateMethod() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateMethod()
 	})
 }
 
 // ClearMethod clears the value of the "method" field.
-func (u *ApiUpsertBulk) ClearMethod() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearMethod() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearMethod()
 	})
 }
 
 // SetMethodName sets the "method_name" field.
-func (u *ApiUpsertBulk) SetMethodName(v string) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetMethodName(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetMethodName(v)
 	})
 }
 
 // UpdateMethodName sets the "method_name" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateMethodName() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateMethodName() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateMethodName()
 	})
 }
 
 // ClearMethodName clears the value of the "method_name" field.
-func (u *ApiUpsertBulk) ClearMethodName() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearMethodName() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearMethodName()
 	})
 }
 
 // SetPath sets the "path" field.
-func (u *ApiUpsertBulk) SetPath(v string) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetPath(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetPath(v)
 	})
 }
 
 // UpdatePath sets the "path" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdatePath() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdatePath() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdatePath()
 	})
 }
 
 // ClearPath clears the value of the "path" field.
-func (u *ApiUpsertBulk) ClearPath() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearPath() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearPath()
 	})
 }
 
 // SetExported sets the "exported" field.
-func (u *ApiUpsertBulk) SetExported(v bool) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetExported(v bool) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetExported(v)
 	})
 }
 
 // UpdateExported sets the "exported" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateExported() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateExported() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateExported()
 	})
 }
 
 // ClearExported clears the value of the "exported" field.
-func (u *ApiUpsertBulk) ClearExported() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearExported() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearExported()
 	})
 }
 
 // SetPathPrefix sets the "path_prefix" field.
-func (u *ApiUpsertBulk) SetPathPrefix(v string) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetPathPrefix(v string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetPathPrefix(v)
 	})
 }
 
 // UpdatePathPrefix sets the "path_prefix" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdatePathPrefix() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdatePathPrefix() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdatePathPrefix()
 	})
 }
 
 // ClearPathPrefix clears the value of the "path_prefix" field.
-func (u *ApiUpsertBulk) ClearPathPrefix() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearPathPrefix() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearPathPrefix()
 	})
 }
 
 // SetDomains sets the "domains" field.
-func (u *ApiUpsertBulk) SetDomains(v []string) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetDomains(v []string) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetDomains(v)
 	})
 }
 
 // UpdateDomains sets the "domains" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateDomains() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateDomains() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateDomains()
 	})
 }
 
 // ClearDomains clears the value of the "domains" field.
-func (u *ApiUpsertBulk) ClearDomains() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearDomains() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearDomains()
 	})
 }
 
 // SetDepracated sets the "depracated" field.
-func (u *ApiUpsertBulk) SetDepracated(v bool) *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) SetDepracated(v bool) *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.SetDepracated(v)
 	})
 }
 
 // UpdateDepracated sets the "depracated" field to the value that was provided on create.
-func (u *ApiUpsertBulk) UpdateDepracated() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) UpdateDepracated() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.UpdateDepracated()
 	})
 }
 
 // ClearDepracated clears the value of the "depracated" field.
-func (u *ApiUpsertBulk) ClearDepracated() *ApiUpsertBulk {
-	return u.Update(func(s *ApiUpsert) {
+func (u *APIUpsertBulk) ClearDepracated() *APIUpsertBulk {
+	return u.Update(func(s *APIUpsert) {
 		s.ClearDepracated()
 	})
 }
 
 // Exec executes the query.
-func (u *ApiUpsertBulk) Exec(ctx context.Context) error {
+func (u *APIUpsertBulk) Exec(ctx context.Context) error {
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the APICreateBulk instead", i)
@@ -1541,7 +1541,7 @@ func (u *ApiUpsertBulk) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (u *ApiUpsertBulk) ExecX(ctx context.Context) {
+func (u *APIUpsertBulk) ExecX(ctx context.Context) {
 	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}

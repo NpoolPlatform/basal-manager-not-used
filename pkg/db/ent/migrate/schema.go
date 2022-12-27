@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	// ApisColumns holds the columns for the "apis" table.
-	ApisColumns = []*schema.Column{
+	// ApIsColumns holds the columns for the "ap_is" table.
+	ApIsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
@@ -24,15 +24,15 @@ var (
 		{Name: "domains", Type: field.TypeJSON, Nullable: true},
 		{Name: "depracated", Type: field.TypeBool, Nullable: true, Default: false},
 	}
-	// ApisTable holds the schema information for the "apis" table.
-	ApisTable = &schema.Table{
-		Name:       "apis",
-		Columns:    ApisColumns,
-		PrimaryKey: []*schema.Column{ApisColumns[0]},
+	// ApIsTable holds the schema information for the "ap_is" table.
+	ApIsTable = &schema.Table{
+		Name:       "ap_is",
+		Columns:    ApIsColumns,
+		PrimaryKey: []*schema.Column{ApIsColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ApisTable,
+		ApIsTable,
 	}
 )
 

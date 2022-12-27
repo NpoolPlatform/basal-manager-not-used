@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/basal-manager/pkg/db/ent"
-	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
@@ -29,116 +28,86 @@ func init() {
 	}
 }
 
-var entity = ent.Api{
-	ID:              uuid.New(),
-	AppID:           uuid.New(),
-	UserID:          uuid.New(),
-	CoinTypeID:      uuid.New(),
-	IoType:          npool.IOType_Incoming.String(),
-	IoSubType:       npool.IOSubType_Payment.String(),
-	Amount:          decimal.RequireFromString("9999999999999999999.999999999999999999"),
-	FromCoinTypeID:  uuid.New(),
-	CoinUsdCurrency: decimal.RequireFromString("1.00045000000123012"),
-	IoExtra:         uuid.New().String(),
-	FromOldID:       uuid.New(),
+var ret = ent.API{
+	ID:          uuid.New(),
+	Protocol:    npool.Protocol_GRPC.String(),
+	ServiceName: uuid.NewString(),
+	Method:      npool.Method_POST.String(),
+	MethodName:  uuid.NewString(),
+	Path:        uuid.NewString(),
+	Exported:    true,
+	PathPrefix:  uuid.NewString(),
+	Domains:     []string{"1", "2"},
 }
 
 var (
-	id              = entity.ID.String()
-	appID           = entity.AppID.String()
-	userID          = entity.UserID.String()
-	coinTypeID      = entity.CoinTypeID.String()
-	ioType          = npool.IOType(npool.IOType_value[entity.IoType])
-	ioSubType       = npool.IOSubType(npool.IOSubType_value[entity.IoSubType])
-	amount          = entity.Amount.String()
-	fromCoinTypeID  = entity.FromCoinTypeID.String()
-	coinUSDCurrency = entity.CoinUsdCurrency.String()
-	ioExtra         = entity.IoExtra
-	fromOldID       = entity.FromOldID.String()
+	id       = ret.ID.String()
+	protocol = npool.Protocol_GRPC
+	method   = npool.Method_POST
 
 	req = npool.APIReq{
-		ID:              &id,
-		AppID:           &appID,
-		UserID:          &userID,
-		CoinTypeID:      &coinTypeID,
-		IOType:          &ioType,
-		IOSubType:       &ioSubType,
-		Amount:          &amount,
-		FromCoinTypeID:  &fromCoinTypeID,
-		CoinUSDCurrency: &coinUSDCurrency,
-		IOExtra:         &ioExtra,
-		FromOldID:       &fromOldID,
+		ID:          &id,
+		Protocol:    &protocol,
+		ServiceName: &ret.ServiceName,
+		Method:      &method,
+		MethodName:  &ret.MethodName,
+		Path:        &ret.Path,
+		Exported:    &ret.Exported,
+		PathPrefix:  &ret.PathPrefix,
+		Domains:     ret.Domains,
 	}
 )
 
-var info *ent.Api
-
 func create(t *testing.T) {
-	var err error
-	info, err = Create(context.Background(), &req)
+	info, err := Create(context.Background(), &req)
 	if assert.Nil(t, err) {
-		entity.UpdatedAt = info.UpdatedAt
-		entity.CreatedAt = info.CreatedAt
-		assert.Equal(t, info.String(), entity.String())
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info.String(), ret.String())
 	}
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.Api{
+	entities := []*ent.API{
 		{
-			ID:              uuid.New(),
-			AppID:           uuid.New(),
-			UserID:          uuid.New(),
-			CoinTypeID:      uuid.New(),
-			IoType:          npool.IOType_Incoming.String(),
-			IoSubType:       npool.IOSubType_Payment.String(),
-			Amount:          decimal.RequireFromString("10.00896"),
-			FromCoinTypeID:  uuid.New(),
-			CoinUsdCurrency: decimal.RequireFromString("1.8902"),
-			IoExtra:         uuid.New().String(),
-			FromOldID:       uuid.New(),
+			ID:          uuid.New(),
+			Protocol:    npool.Protocol_GRPC.String(),
+			ServiceName: uuid.NewString(),
+			Method:      npool.Method_POST.String(),
+			MethodName:  uuid.NewString(),
+			Path:        uuid.NewString(),
+			Exported:    true,
+			PathPrefix:  uuid.NewString(),
+			Domains:     []string{"1", "2"},
 		},
 		{
-			ID:              uuid.New(),
-			AppID:           uuid.New(),
-			UserID:          uuid.New(),
-			CoinTypeID:      uuid.New(),
-			IoType:          npool.IOType_Incoming.String(),
-			IoSubType:       npool.IOSubType_Payment.String(),
-			Amount:          decimal.RequireFromString("11.11111"),
-			FromCoinTypeID:  uuid.New(),
-			CoinUsdCurrency: decimal.RequireFromString("1.123"),
-			IoExtra:         uuid.New().String(),
-			FromOldID:       uuid.New(),
+			ID:          uuid.New(),
+			Protocol:    npool.Protocol_HTTP.String(),
+			ServiceName: uuid.NewString(),
+			Method:      npool.Method_GET.String(),
+			MethodName:  uuid.NewString(),
+			Path:        uuid.NewString(),
+			Exported:    true,
+			PathPrefix:  uuid.NewString(),
+			Domains:     []string{"1", "2"},
 		},
 	}
 
 	reqs := []*npool.APIReq{}
-	for _, _entity := range entities {
-		_id := _entity.ID.String()
-		_appID := _entity.AppID.String()
-		_userID := _entity.UserID.String()
-		_coinTypeID := _entity.CoinTypeID.String()
-		_ioType := npool.IOType(npool.IOType_value[_entity.IoType])
-		_ioSubType := npool.IOSubType(npool.IOSubType_value[_entity.IoSubType])
-		_amount := _entity.Amount.String()
-		_fromCoinTypeID := entity.FromCoinTypeID.String()
-		_coinUSDCurrency := _entity.CoinUsdCurrency.String()
-		_ioExtra := _entity.IoExtra
-		_fromOldID := _entity.FromOldID.String()
+	for _, _ret := range entities {
+		_id := _ret.ID.String()
+		_protocol := npool.Protocol(npool.Protocol_value[_ret.Protocol])
+		_method := npool.Method(npool.Method_value[_ret.Method])
 
 		reqs = append(reqs, &npool.APIReq{
-			ID:              &_id,
-			AppID:           &_appID,
-			UserID:          &_userID,
-			CoinTypeID:      &_coinTypeID,
-			IOType:          &_ioType,
-			IOSubType:       &_ioSubType,
-			Amount:          &_amount,
-			FromCoinTypeID:  &_fromCoinTypeID,
-			CoinUSDCurrency: &_coinUSDCurrency,
-			IOExtra:         &_ioExtra,
-			FromOldID:       &_fromOldID,
+			ID:          &_id,
+			Protocol:    &_protocol,
+			ServiceName: &_ret.ServiceName,
+			Method:      &_method,
+			MethodName:  &_ret.MethodName,
+			Path:        &_ret.Path,
+			Exported:    &_ret.Exported,
+			PathPrefix:  &_ret.PathPrefix,
+			Domains:     _ret.Domains,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -147,11 +116,23 @@ func createBulk(t *testing.T) {
 	}
 }
 
-func row(t *testing.T) {
-	var err error
-	info, err = Row(context.Background(), entity.ID)
+func update(t *testing.T) {
+	depracated := true
+
+	req.Depracated = &depracated
+	ret.Depracated = depracated
+
+	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
-		assert.Equal(t, info.String(), entity.String())
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info.String(), ret.String())
+	}
+}
+
+func row(t *testing.T) {
+	info, err := Row(context.Background(), ret.ID)
+	if assert.Nil(t, err) {
+		assert.Equal(t, info.String(), ret.String())
 	}
 }
 
@@ -165,14 +146,13 @@ func rows(t *testing.T) {
 		}, 0, 0)
 	if assert.Nil(t, err) {
 		if assert.Equal(t, total, 1) {
-			assert.Equal(t, infos[0].String(), entity.String())
+			assert.Equal(t, infos[0].String(), ret.String())
 		}
 	}
 }
 
 func rowOnly(t *testing.T) {
-	var err error
-	info, err = RowOnly(context.Background(),
+	info, err := RowOnly(context.Background(),
 		&npool.Conds{
 			ID: &valuedef.StringVal{
 				Value: id,
@@ -180,7 +160,7 @@ func rowOnly(t *testing.T) {
 			},
 		})
 	if assert.Nil(t, err) {
-		assert.Equal(t, info.String(), entity.String())
+		assert.Equal(t, info.String(), ret.String())
 	}
 }
 
@@ -199,7 +179,7 @@ func count(t *testing.T) {
 }
 
 func exist(t *testing.T) {
-	exist, err := Exist(context.Background(), entity.ID)
+	exist, err := Exist(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, exist, true)
 	}
@@ -220,10 +200,10 @@ func existConds(t *testing.T) {
 }
 
 func deleteA(t *testing.T) {
-	info, err := Delete(context.Background(), entity.ID)
+	info, err := Delete(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
-		entity.DeletedAt = info.DeletedAt
-		assert.Equal(t, info.String(), entity.String())
+		ret.DeletedAt = info.DeletedAt
+		assert.Equal(t, info.String(), ret.String())
 	}
 }
 
@@ -233,6 +213,7 @@ func TestAPI(t *testing.T) {
 	}
 	t.Run("create", create)
 	t.Run("createBulk", createBulk)
+	t.Run("update", update)
 	t.Run("row", row)
 	t.Run("rows", rows)
 	t.Run("rowOnly", rowOnly)

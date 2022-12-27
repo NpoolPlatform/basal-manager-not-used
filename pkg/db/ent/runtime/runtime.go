@@ -17,8 +17,8 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	apiMixin := schema.Api{}.Mixin()
-	api.Policy = privacy.NewPolicies(apiMixin[0], schema.Api{})
+	apiMixin := schema.API{}.Mixin()
+	api.Policy = privacy.NewPolicies(apiMixin[0], schema.API{})
 	api.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 			if err := api.Policy.EvalMutation(ctx, m); err != nil {
@@ -29,7 +29,7 @@ func init() {
 	}
 	apiMixinFields0 := apiMixin[0].Fields()
 	_ = apiMixinFields0
-	apiFields := schema.Api{}.Fields()
+	apiFields := schema.API{}.Fields()
 	_ = apiFields
 	// apiDescCreatedAt is the schema descriptor for created_at field.
 	apiDescCreatedAt := apiMixinFields0[0].Descriptor()

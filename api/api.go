@@ -1,9 +1,7 @@
 package api
 
 import (
-	"context"
-
-	basal "github.com/NpoolPlatform/message/npool/basal/gw/v1"
+	basal "github.com/NpoolPlatform/message/npool/basal/mgr/v1"
 
 	api1 "github.com/NpoolPlatform/basal-manager/api/api"
 

@@ -23,7 +23,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 				Column: api.FieldID,
 			},
 		},
-		Type: "Api",
+		Type: "API",
 		Fields: map[string]*sqlgraph.FieldSpec{
 			api.FieldCreatedAt:   {Type: field.TypeUint32, Column: api.FieldCreatedAt},
 			api.FieldUpdatedAt:   {Type: field.TypeUint32, Column: api.FieldUpdatedAt},

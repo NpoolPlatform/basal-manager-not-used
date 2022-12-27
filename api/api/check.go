@@ -3,10 +3,6 @@ package api
 import (
 	"fmt"
 
-	"github.com/shopspring/decimal"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	npool "github.com/NpoolPlatform/message/npool/basal/mgr/v1/api"
 
@@ -14,132 +10,88 @@ import (
 )
 
 func validate(info *npool.APIReq) error { //nolint
-	if info.AppID == nil {
-		logger.Sugar().Errorw("validate", "AppID", info.AppID)
-		return status.Error(codes.InvalidArgument, "AppID is empty")
-	}
-
-	if _, err := uuid.Parse(info.GetAppID()); err != nil {
-		logger.Sugar().Errorw("validate", "AppID", info.GetAppID(), "error", err)
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("AppID is invalid: %v", err))
-	}
-
-	if info.UserID == nil {
-		logger.Sugar().Errorw("validate", "UserID", info.UserID)
-		return status.Error(codes.InvalidArgument, "UserID is empty")
-	}
-
-	if _, err := uuid.Parse(info.GetUserID()); err != nil {
-		logger.Sugar().Errorw("validate", "UserID", info.GetUserID(), "error", err)
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("UserID is invalid: %v", err))
-	}
-
-	if info.CoinTypeID == nil {
-		logger.Sugar().Errorw("validate", "CoinTypeID", info.CoinTypeID)
-		return status.Error(codes.InvalidArgument, "UserID is empty")
-	}
-
-	if _, err := uuid.Parse(info.GetCoinTypeID()); err != nil {
-		logger.Sugar().Errorw("validate", "CoinTypeID", info.GetCoinTypeID(), "error", err)
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("CoinTypeID is invalid: %v", err))
-	}
-
-	if info.FromCoinTypeID != nil {
-		if _, err := uuid.Parse(info.GetFromCoinTypeID()); err != nil {
-			logger.Sugar().Errorw("validate", "FromCoinTypeID", info.GetFromCoinTypeID(), "error", err)
-			return status.Error(codes.InvalidArgument, fmt.Sprintf("FromCoinTypeID is invalid: %v", err))
+	if info.ID != nil {
+		if _, err := uuid.Parse(info.GetID()); err != nil {
+			logger.Sugar().Errorw("validate", "ID", info.ID)
+			return fmt.Errorf("id is empty")
 		}
 	}
 
-	if info.Amount != nil {
-		amount, err := decimal.NewFromString(info.GetAmount())
-		if err != nil {
-			logger.Sugar().Errorw("validate", "Amount", info.GetAmount(), "error", err)
-			return status.Error(codes.InvalidArgument, fmt.Sprintf("Amount is invalid: %v", err))
-		}
-		if amount.Cmp(decimal.NewFromInt(0)) < 0 {
-			logger.Sugar().Errorw("validate", "Amount", info.GetAmount(), "error", "less than 0")
-			return status.Error(codes.InvalidArgument, "Amount is less than 0")
-		}
-	}
-
-	if info.CoinUSDCurrency != nil {
-		currency, err := decimal.NewFromString(info.GetCoinUSDCurrency())
-		if err != nil {
-			logger.Sugar().Errorw("validate", "CoinUSDCurrency", info.GetCoinUSDCurrency(), "error", err)
-			return status.Error(codes.InvalidArgument, fmt.Sprintf("CoinUSDCurrency is invalid: %v", err))
-		}
-		if currency.Cmp(decimal.NewFromInt(0)) < 0 {
-			logger.Sugar().Errorw("validate", "CoinUSDCurrency", info.GetCoinUSDCurrency(), "error", "less than 0")
-			return status.Error(codes.InvalidArgument, "CoinUSDCurrency is less than 0")
-		}
-	}
-
-	if info.IOType == nil {
-		logger.Sugar().Errorw("validate", "IOType", info.IOType)
-		return status.Error(codes.InvalidArgument, "IOType is empty")
-	}
-
-	if info.IOSubType == nil {
-		logger.Sugar().Errorw("validate", "IOSubType", info.IOSubType)
-		return status.Error(codes.InvalidArgument, "IOSubType is empty")
-	}
-
-	switch info.GetIOType() {
-	case npool.IOType_Incoming:
-		switch info.GetIOSubType() {
-		case npool.IOSubType_Payment:
-		case npool.IOSubType_MiningBenefit:
-		case npool.IOSubType_Commission:
-		case npool.IOSubType_TechniqueFeeCommission:
-		default:
-			logger.Sugar().Errorw("validate", "IOType", info.GetIOType(), "IOSubType", info.GetIOSubType())
-			return status.Error(codes.InvalidArgument, "Incoming IOSubType is invalid")
-		}
-	case npool.IOType_Outcoming:
-		switch info.GetIOSubType() {
-		case npool.IOSubType_Payment:
-		case npool.IOSubType_Withdrawal:
-		default:
-			logger.Sugar().Errorw("validate", "IOType", info.GetIOType(), "IOSubType", info.GetIOSubType())
-			return status.Error(codes.InvalidArgument, "Outcoming IOSubType is invalid")
-		}
+	switch info.GetProtocol() {
+	case npool.Protocol_GRPC:
+	case npool.Protocol_HTTP:
 	default:
-		logger.Sugar().Errorw("validate", "IOType", info.GetIOType())
-		return status.Error(codes.InvalidArgument, "IOSubType is invalid")
+		logger.Sugar().Errorw("validate", "Protocol", info.Protocol)
+		return fmt.Errorf("protocol is invalid")
 	}
 
-	if info.FromOldID != nil {
-		if _, err := uuid.Parse(info.GetFromOldID()); err != nil {
-			logger.Sugar().Errorw("validate", "FromOldID", info.GetFromOldID(), "error", err)
-			return status.Error(codes.InvalidArgument, fmt.Sprintf("FromOldID is invalid: %v", err))
+	if info.ServiceName != nil && info.GetServiceName() == "" {
+		logger.Sugar().Errorw("validate", "ServiceName", info.ServiceName)
+		return fmt.Errorf("servicename is invalid")
+	}
+
+	switch info.GetMethod() {
+	case npool.Method_GET:
+	case npool.Method_POST:
+	default:
+		logger.Sugar().Errorw("validate", "Method", info.Method)
+		return fmt.Errorf("method is invalid")
+	}
+
+	if info.MethodName != nil && info.GetMethodName() == "" {
+		logger.Sugar().Errorw("validate", "MethodName", info.MethodName)
+		return fmt.Errorf("methodname is invalid")
+	}
+
+	if info.Path != nil && info.GetPath() == "" {
+		logger.Sugar().Errorw("validate", "Path", info.Path)
+		return fmt.Errorf("path is invalid")
+	}
+
+	if info.PathPrefix != nil && info.GetPathPrefix() == "" {
+		logger.Sugar().Errorw("validate", "PathPrefix", info.PathPrefix)
+		return fmt.Errorf("pathprefix is invalid")
+	}
+
+	for _, domain := range info.GetDomains() {
+		if domain == "" {
+			logger.Sugar().Errorw("validate", "Domains", info.Domains)
+			return fmt.Errorf("domains is invalid")
 		}
 	}
 
 	return nil
 }
 
-func duplicate(infos []*npool.APIReq) error {
+func validateMany(infos []*npool.APIReq) error {
 	keys := map[string]struct{}{}
-	apps := map[string]struct{}{}
 
 	for _, info := range infos {
 		if err := validate(info); err != nil {
-			return status.Error(codes.InvalidArgument, fmt.Sprintf("Infos has invalid element %v", err))
+			return err
 		}
 
-		key := fmt.Sprintf("%v:%v:%v", info.AppID, info.UserID, info.CoinTypeID)
+		key := fmt.Sprintf(
+			"%v:%v:%v:%v",
+			info.GetServiceName(),
+			info.GetProtocol(),
+			info.GetMethod(),
+			info.GetPath())
+
 		if _, ok := keys[key]; ok {
-			return status.Error(codes.InvalidArgument, "Infos has duplicate AppID:UserID:CoinTypeID")
+			return fmt.Errorf("infos is invalid")
 		}
 
 		keys[key] = struct{}{}
-		apps[info.GetAppID()] = struct{}{}
-	}
-
-	if len(apps) > 1 {
-		return status.Error(codes.InvalidArgument, "Infos has different AppID")
 	}
 
 	return nil
+}
+
+func Validate(info *npool.APIReq) error {
+	return validate(info)
+}
+
+func ValidateMany(infos []*npool.APIReq) error {
+	return validateMany(infos)
 }

@@ -150,24 +150,24 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The ApiQueryRuleFunc type is an adapter to allow the use of ordinary
+// The APIQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type ApiQueryRuleFunc func(context.Context, *ent.APIQuery) error
+type APIQueryRuleFunc func(context.Context, *ent.APIQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f ApiQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+func (f APIQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
 	if q, ok := q.(*ent.APIQuery); ok {
 		return f(ctx, q)
 	}
 	return Denyf("ent/privacy: unexpected query type %T, expect *ent.APIQuery", q)
 }
 
-// The ApiMutationRuleFunc type is an adapter to allow the use of ordinary
+// The APIMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type ApiMutationRuleFunc func(context.Context, *ent.APIMutation) error
+type APIMutationRuleFunc func(context.Context, *ent.APIMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f ApiMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+func (f APIMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
 	if m, ok := m.(*ent.APIMutation); ok {
 		return f(ctx, m)
 	}

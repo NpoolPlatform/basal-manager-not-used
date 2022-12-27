@@ -5,27 +5,27 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/basal/mgr/v1/api"
 )
 
-func Ent2Grpc(row *ent.Api) *npool.API {
+func Ent2Grpc(row *ent.API) *npool.API {
 	if row == nil {
 		return nil
 	}
 
 	return &npool.API{
-		ID:              row.ID.String(),
-		AppID:           row.AppID.String(),
-		UserID:          row.UserID.String(),
-		CoinTypeID:      row.CoinTypeID.String(),
-		IOType:          npool.IOType(npool.IOType_value[row.IoType]),
-		IOSubType:       npool.IOSubType(npool.IOSubType_value[row.IoSubType]),
-		Amount:          row.Amount.String(),
-		FromCoinTypeID:  row.FromCoinTypeID.String(),
-		CoinUSDCurrency: row.CoinUsdCurrency.String(),
-		IOExtra:         row.IoExtra,
-		FromOldID:       row.FromOldID.String(),
+		ID:          row.ID.String(),
+		Protocol:    npool.Protocol(npool.Protocol_value[row.Protocol]),
+		ServiceName: row.ServiceName,
+		Method:      npool.Method(npool.Method_value[row.Method]),
+		Path:        row.Path,
+		Exported:    row.Exported,
+		PathPrefix:  row.PathPrefix,
+		Domains:     row.Domains,
+		Depracated:  row.Depracated,
+		CreatedAt:   row.CreatedAt,
+		UpdatedAt:   row.UpdatedAt,
 	}
 }
 
-func Ent2GrpcMany(rows []*ent.Api) []*npool.API {
+func Ent2GrpcMany(rows []*ent.API) []*npool.API {
 	infos := []*npool.API{}
 	for _, row := range rows {
 		infos = append(infos, Ent2Grpc(row))

@@ -24,10 +24,10 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeApi = "Api"
+	TypeAPI = "API"
 )
 
-// APIMutation represents an operation that mutates the Api nodes in the graph.
+// APIMutation represents an operation that mutates the API nodes in the graph.
 type APIMutation struct {
 	config
 	op            Op
@@ -50,8 +50,8 @@ type APIMutation struct {
 	depracated    *bool
 	clearedFields map[string]struct{}
 	done          bool
-	oldValue      func(context.Context) (*Api, error)
-	predicates    []predicate.Api
+	oldValue      func(context.Context) (*API, error)
+	predicates    []predicate.API
 }
 
 var _ ent.Mutation = (*APIMutation)(nil)
@@ -59,12 +59,12 @@ var _ ent.Mutation = (*APIMutation)(nil)
 // apiOption allows management of the mutation configuration using functional options.
 type apiOption func(*APIMutation)
 
-// newAPIMutation creates new mutation for the Api entity.
+// newAPIMutation creates new mutation for the API entity.
 func newAPIMutation(c config, op Op, opts ...apiOption) *APIMutation {
 	m := &APIMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeApi,
+		typ:           TypeAPI,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -73,20 +73,20 @@ func newAPIMutation(c config, op Op, opts ...apiOption) *APIMutation {
 	return m
 }
 
-// withApiID sets the ID field of the mutation.
-func withApiID(id uuid.UUID) apiOption {
+// withAPIID sets the ID field of the mutation.
+func withAPIID(id uuid.UUID) apiOption {
 	return func(m *APIMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Api
+			value *API
 		)
-		m.oldValue = func(ctx context.Context) (*Api, error) {
+		m.oldValue = func(ctx context.Context) (*API, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Api.Get(ctx, id)
+					value, err = m.Client().API.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -95,10 +95,10 @@ func withApiID(id uuid.UUID) apiOption {
 	}
 }
 
-// withApi sets the old Api of the mutation.
-func withApi(node *Api) apiOption {
+// withAPI sets the old API of the mutation.
+func withAPI(node *API) apiOption {
 	return func(m *APIMutation) {
-		m.oldValue = func(context.Context) (*Api, error) {
+		m.oldValue = func(context.Context) (*API, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -125,7 +125,7 @@ func (m APIMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Api entities.
+// operation is only accepted on creation of API entities.
 func (m *APIMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
@@ -152,7 +152,7 @@ func (m *APIMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Api.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().API.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
@@ -173,8 +173,8 @@ func (m *APIMutation) CreatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -229,8 +229,8 @@ func (m *APIMutation) UpdatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -285,8 +285,8 @@ func (m *APIMutation) DeletedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldDeletedAt returns the old "deleted_at" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldDeletedAt returns the old "deleted_at" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -340,8 +340,8 @@ func (m *APIMutation) Protocol() (r string, exists bool) {
 	return *v, true
 }
 
-// OldProtocol returns the old "protocol" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldProtocol returns the old "protocol" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldProtocol(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -389,8 +389,8 @@ func (m *APIMutation) ServiceName() (r string, exists bool) {
 	return *v, true
 }
 
-// OldServiceName returns the old "service_name" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldServiceName returns the old "service_name" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldServiceName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -438,8 +438,8 @@ func (m *APIMutation) Method() (r string, exists bool) {
 	return *v, true
 }
 
-// OldMethod returns the old "method" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldMethod returns the old "method" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldMethod(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -487,8 +487,8 @@ func (m *APIMutation) MethodName() (r string, exists bool) {
 	return *v, true
 }
 
-// OldMethodName returns the old "method_name" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldMethodName returns the old "method_name" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldMethodName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -536,8 +536,8 @@ func (m *APIMutation) Path() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPath returns the old "path" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldPath returns the old "path" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldPath(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -585,8 +585,8 @@ func (m *APIMutation) Exported() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldExported returns the old "exported" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldExported returns the old "exported" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldExported(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -634,8 +634,8 @@ func (m *APIMutation) PathPrefix() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPathPrefix returns the old "path_prefix" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldPathPrefix returns the old "path_prefix" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldPathPrefix(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -683,8 +683,8 @@ func (m *APIMutation) Domains() (r []string, exists bool) {
 	return *v, true
 }
 
-// OldDomains returns the old "domains" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldDomains returns the old "domains" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldDomains(ctx context.Context) (v []string, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -732,8 +732,8 @@ func (m *APIMutation) Depracated() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldDepracated returns the old "depracated" field's value of the Api entity.
-// If the Api object wasn't provided to the builder, the object is fetched from the database.
+// OldDepracated returns the old "depracated" field's value of the API entity.
+// If the API object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *APIMutation) OldDepracated(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
@@ -768,7 +768,7 @@ func (m *APIMutation) ResetDepracated() {
 }
 
 // Where appends a list predicates to the APIMutation builder.
-func (m *APIMutation) Where(ps ...predicate.Api) {
+func (m *APIMutation) Where(ps ...predicate.API) {
 	m.predicates = append(m.predicates, ps...)
 }
 
@@ -777,7 +777,7 @@ func (m *APIMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (Api).
+// Type returns the node type of this mutation (API).
 func (m *APIMutation) Type() string {
 	return m.typ
 }
@@ -889,7 +889,7 @@ func (m *APIMutation) OldField(ctx context.Context, name string) (ent.Value, err
 	case api.FieldDepracated:
 		return m.OldDepracated(ctx)
 	}
-	return nil, fmt.Errorf("unknown Api field %s", name)
+	return nil, fmt.Errorf("unknown API field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
@@ -982,7 +982,7 @@ func (m *APIMutation) SetField(name string, value ent.Value) error {
 		m.SetDepracated(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Api field %s", name)
+	return fmt.Errorf("unknown API field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
@@ -1043,7 +1043,7 @@ func (m *APIMutation) AddField(name string, value ent.Value) error {
 		m.AddDeletedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Api numeric field %s", name)
+	return fmt.Errorf("unknown API numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
@@ -1119,7 +1119,7 @@ func (m *APIMutation) ClearField(name string) error {
 		m.ClearDepracated()
 		return nil
 	}
-	return fmt.Errorf("unknown Api nullable field %s", name)
+	return fmt.Errorf("unknown API nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
@@ -1163,7 +1163,7 @@ func (m *APIMutation) ResetField(name string) error {
 		m.ResetDepracated()
 		return nil
 	}
-	return fmt.Errorf("unknown Api field %s", name)
+	return fmt.Errorf("unknown API field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
@@ -1205,11 +1205,11 @@ func (m *APIMutation) EdgeCleared(name string) bool {
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *APIMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown Api unique edge %s", name)
+	return fmt.Errorf("unknown API unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *APIMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown Api edge %s", name)
+	return fmt.Errorf("unknown API edge %s", name)
 }

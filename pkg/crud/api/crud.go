@@ -9,7 +9,6 @@ import (
 	commontracer "github.com/NpoolPlatform/basal-manager/pkg/tracer"
 	tracer "github.com/NpoolPlatform/basal-manager/pkg/tracer/api"
 
-	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 
@@ -22,8 +21,38 @@ import (
 	"github.com/google/uuid"
 )
 
-func Create(ctx context.Context, in *npool.APIReq) (*ent.Api, error) { //nolint
-	var info *ent.Api
+func CreateSet(c *ent.APICreate, in *npool.APIReq) *ent.APICreate {
+	if in.ID != nil {
+		c.SetID(uuid.MustParse(in.GetID()))
+	}
+	if in.Protocol != nil {
+		c.SetProtocol(in.GetProtocol().String())
+	}
+	if in.ServiceName != nil {
+		c.SetServiceName(in.GetServiceName())
+	}
+	if in.Method != nil {
+		c.SetMethod(in.GetMethod().String())
+	}
+	if in.MethodName != nil {
+		c.SetMethodName(in.GetMethodName())
+	}
+	if in.Path != nil {
+		c.SetPath(in.GetPath())
+	}
+	if in.Exported != nil {
+		c.SetExported(in.GetExported())
+	}
+	if in.PathPrefix != nil {
+		c.SetPathPrefix(in.GetPathPrefix())
+	}
+	c.SetDomains(in.GetDomains())
+	c.SetDepracated(false)
+	return c
+}
+
+func Create(ctx context.Context, in *npool.APIReq) (*ent.API, error) {
+	var info *ent.API
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -39,53 +68,8 @@ func Create(ctx context.Context, in *npool.APIReq) (*ent.Api, error) { //nolint
 	span = tracer.Trace(span, in)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		c := cli.Api.Create()
-
-		if in.ID != nil {
-			c.SetID(uuid.MustParse(in.GetID()))
-		}
-		if in.AppID != nil {
-			c.SetAppID(uuid.MustParse(in.GetAppID()))
-		}
-		if in.UserID != nil {
-			c.SetUserID(uuid.MustParse(in.GetUserID()))
-		}
-		if in.CoinTypeID != nil {
-			c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
-		}
-		if in.IOType != nil {
-			c.SetIoType(in.GetIOType().String())
-		}
-		if in.IOSubType != nil {
-			c.SetIoSubType(in.GetIOSubType().String())
-		}
-		if in.Amount != nil {
-			amount, err := decimal.NewFromString(in.GetAmount())
-			if err != nil {
-				return err
-			}
-			c.SetAmount(amount)
-		}
-		if in.FromCoinTypeID != nil {
-			c.SetFromCoinTypeID(uuid.MustParse(in.GetFromCoinTypeID()))
-		}
-		if in.CoinUSDCurrency != nil {
-			currency, err := decimal.NewFromString(in.GetCoinUSDCurrency())
-			if err != nil {
-				return err
-			}
-			c.SetCoinUsdCurrency(currency)
-		}
-		if in.IOExtra != nil {
-			c.SetIoExtra(in.GetIOExtra())
-		}
-		if in.FromOldID != nil {
-			c.SetFromOldID(uuid.MustParse(in.GetFromOldID()))
-		}
-		if in.CreatedAt != nil {
-			c.SetCreatedAt(in.GetCreatedAt())
-		}
-
+		c := cli.API.Create()
+		c = CreateSet(c, in)
 		info, err = c.Save(_ctx)
 		return err
 	})
@@ -96,7 +80,7 @@ func Create(ctx context.Context, in *npool.APIReq) (*ent.Api, error) { //nolint
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.APIReq) ([]*ent.Api, error) { //nolint
+func CreateBulk(ctx context.Context, in []*npool.APIReq) ([]*ent.API, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateBulk")
@@ -111,57 +95,13 @@ func CreateBulk(ctx context.Context, in []*npool.APIReq) ([]*ent.Api, error) { /
 
 	span = tracer.TraceMany(span, in)
 
-	rows := []*ent.Api{}
+	rows := []*ent.API{}
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		bulk := make([]*ent.ApiCreate, len(in))
+		bulk := make([]*ent.APICreate, len(in))
 		for i, info := range in {
-			bulk[i] = tx.Api.Create()
-			if info.ID != nil {
-				bulk[i].SetID(uuid.MustParse(info.GetID()))
-			}
-			if info.AppID != nil {
-				bulk[i].SetAppID(uuid.MustParse(info.GetAppID()))
-			}
-			if info.UserID != nil {
-				bulk[i].SetUserID(uuid.MustParse(info.GetUserID()))
-			}
-			if info.CoinTypeID != nil {
-				bulk[i].SetCoinTypeID(uuid.MustParse(info.GetCoinTypeID()))
-			}
-			if info.IOType != nil {
-				bulk[i].SetIoType(info.GetIOType().String())
-			}
-			if info.IOSubType != nil {
-				bulk[i].SetIoSubType(info.GetIOSubType().String())
-			}
-			if info.Amount != nil {
-				amount, err := decimal.NewFromString(info.GetAmount())
-				if err != nil {
-					return err
-				}
-				bulk[i].SetAmount(amount)
-			}
-			if info.FromCoinTypeID != nil {
-				bulk[i].SetCoinTypeID(uuid.MustParse(info.GetFromCoinTypeID()))
-			}
-			if info.CoinUSDCurrency != nil {
-				currency, err := decimal.NewFromString(info.GetCoinUSDCurrency())
-				if err != nil {
-					return err
-				}
-				bulk[i].SetCoinUsdCurrency(currency)
-			}
-			if info.IOExtra != nil {
-				bulk[i].SetIoExtra(info.GetIOExtra())
-			}
-			if info.FromOldID != nil {
-				bulk[i].SetFromOldID(uuid.MustParse(info.GetFromOldID()))
-			}
-			if info.CreatedAt != nil {
-				bulk[i].SetCreatedAt(info.GetCreatedAt())
-			}
+			bulk[i] = CreateSet(tx.API.Create(), info)
 		}
-		rows, err = tx.Api.CreateBulk(bulk...).Save(_ctx)
+		rows, err = tx.API.CreateBulk(bulk...).Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -170,8 +110,56 @@ func CreateBulk(ctx context.Context, in []*npool.APIReq) ([]*ent.Api, error) { /
 	return rows, nil
 }
 
-func Row(ctx context.Context, id uuid.UUID) (*ent.Api, error) {
-	var info *ent.Api
+func UpdateSet(info *ent.API, in *npool.APIReq) *ent.APIUpdateOne {
+	stm := info.Update()
+
+	if in.Depracated != nil {
+		stm = stm.SetDepracated(in.GetDepracated())
+	}
+
+	return stm
+}
+
+func Update(ctx context.Context, in *npool.APIReq) (*ent.API, error) {
+	var info *ent.API
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(codes.Error, "db operation fail")
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in)
+
+	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+		info, err = tx.API.Query().Where(api.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
+		if err != nil {
+			return fmt.Errorf("fail query api: %v", err)
+		}
+
+		stm := UpdateSet(info, in)
+
+		info, err = stm.Save(_ctx)
+		if err != nil {
+			return fmt.Errorf("fail update api: %v", err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("fail update api: %v", err)
+	}
+
+	return info, nil
+}
+
+func Row(ctx context.Context, id uuid.UUID) (*ent.API, error) {
+	var info *ent.API
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Row")
@@ -187,7 +175,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Api, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Api.Query().Where(api.ID(id)).Only(_ctx)
+		info, err = cli.API.Query().Where(api.ID(id)).Only(_ctx)
 		return err
 	})
 	if err != nil {
@@ -197,8 +185,8 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Api, error) {
 	return info, nil
 }
 
-func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.ApiQuery, error) { //nolint
-	stm := cli.Api.Query()
+func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.APIQuery, error) {
+	stm := cli.API.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
@@ -207,98 +195,34 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.ApiQuery, error) {
 			return nil, fmt.Errorf("invalid api field")
 		}
 	}
-	if conds.AppID != nil {
-		switch conds.GetAppID().GetOp() {
+	if conds.Protocol != nil {
+		switch conds.GetProtocol().GetOp() {
 		case cruder.EQ:
-			stm.Where(api.AppID(uuid.MustParse(conds.GetAppID().GetValue())))
+			stm.Where(api.Protocol(npool.Protocol(conds.GetProtocol().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid api field")
 		}
 	}
-	if conds.UserID != nil {
-		switch conds.GetUserID().GetOp() {
+	if conds.Method != nil {
+		switch conds.GetMethod().GetOp() {
 		case cruder.EQ:
-			stm.Where(api.UserID(uuid.MustParse(conds.GetUserID().GetValue())))
+			stm.Where(api.Method(npool.Method(conds.GetMethod().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid api field")
 		}
 	}
-	if conds.CoinTypeID != nil {
-		switch conds.GetCoinTypeID().GetOp() {
-		case cruder.EQ:
-			stm.Where(api.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid api field")
-		}
-	}
-	if conds.IOType != nil {
-		switch conds.GetIOType().GetOp() {
-		case cruder.EQ:
-			stm.Where(api.IoType(npool.IOType(conds.GetIOType().GetValue()).String()))
-		default:
-			return nil, fmt.Errorf("invalid api field")
-		}
-	}
-	if conds.IOSubType != nil {
-		switch conds.GetIOSubType().GetOp() {
-		case cruder.EQ:
-			stm.Where(api.IoType(npool.IOSubType(conds.GetIOSubType().GetValue()).String()))
-		default:
-			return nil, fmt.Errorf("invalid api field")
-		}
-	}
-	if conds.Amount != nil {
-		amount, err := decimal.NewFromString(conds.GetAmount().GetValue())
-		if err != nil {
-			return nil, err
-		}
-		switch conds.GetAmount().GetOp() {
-		case cruder.LT:
-			stm.Where(api.AmountLT(amount))
-		case cruder.GT:
-			stm.Where(api.AmountGT(amount))
-		case cruder.EQ:
-			stm.Where(api.AmountEQ(amount))
-		default:
-			return nil, fmt.Errorf("invalid api field")
-		}
-	}
-	if conds.FromCoinTypeID != nil {
-		switch conds.GetFromCoinTypeID().GetOp() {
-		case cruder.EQ:
-			stm.Where(api.FromCoinTypeID(uuid.MustParse(conds.GetFromCoinTypeID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid api field")
-		}
-	}
-	if conds.CoinUSDCurrency != nil {
-		currency, err := decimal.NewFromString(conds.GetCoinUSDCurrency().GetValue())
-		if err != nil {
-			return nil, err
-		}
-		switch conds.GetCoinUSDCurrency().GetOp() {
-		case cruder.LT:
-			stm.Where(api.CoinUsdCurrencyLT(currency))
-		case cruder.GT:
-			stm.Where(api.CoinUsdCurrencyGT(currency))
-		case cruder.EQ:
-			stm.Where(api.CoinUsdCurrencyEQ(currency))
-		default:
-			return nil, fmt.Errorf("invalid api field")
-		}
-	}
-	if conds.IOExtra != nil {
-		switch conds.GetIOExtra().GetOp() {
+	if conds.Exported != nil {
+		switch conds.GetExported().GetOp() {
 		case cruder.LIKE:
-			stm.Where(api.IoExtraContains(conds.GetIOExtra().GetValue()))
+			stm.Where(api.Exported(conds.GetExported().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid api field")
 		}
 	}
-	if conds.FromOldID != nil {
-		switch conds.GetFromOldID().GetOp() {
-		case cruder.EQ:
-			stm.Where(api.FromOldID(uuid.MustParse(conds.GetFromOldID().GetValue())))
+	if conds.Depracated != nil {
+		switch conds.GetDepracated().GetOp() {
+		case cruder.LIKE:
+			stm.Where(api.Depracated(conds.GetDepracated().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid api field")
 		}
@@ -306,7 +230,7 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.ApiQuery, error) {
 	return stm, nil
 }
 
-func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Api, int, error) {
+func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.API, int, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Rows")
@@ -322,10 +246,10 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Ap
 	span = tracer.TraceConds(span, conds)
 	span = commontracer.TraceOffsetLimit(span, offset, limit)
 
-	rows := []*ent.Api{}
+	rows := []*ent.API{}
 	var total int
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
@@ -352,8 +276,8 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Ap
 	return rows, total, nil
 }
 
-func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Api, error) {
-	var info *ent.Api
+func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.API, error) {
+	var info *ent.API
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "RowOnly")
@@ -369,7 +293,7 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Api, error) {
 	span = tracer.TraceConds(span, conds)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
@@ -405,7 +329,7 @@ func Count(ctx context.Context, conds *npool.Conds) (uint32, error) {
 	span = tracer.TraceConds(span, conds)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
@@ -440,7 +364,7 @@ func Exist(ctx context.Context, id uuid.UUID) (bool, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		exist, err = cli.Api.Query().Where(api.ID(id)).Exist(_ctx)
+		exist, err = cli.API.Query().Where(api.ID(id)).Exist(_ctx)
 		return err
 	})
 	if err != nil {
@@ -467,7 +391,7 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	span = tracer.TraceConds(span, conds)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
@@ -486,8 +410,8 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return exist, nil
 }
 
-func Delete(ctx context.Context, id uuid.UUID) (*ent.Api, error) {
-	var info *ent.Api
+func Delete(ctx context.Context, id uuid.UUID) (*ent.API, error) {
+	var info *ent.API
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Delete")
@@ -503,7 +427,7 @@ func Delete(ctx context.Context, id uuid.UUID) (*ent.Api, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Api.UpdateOneID(id).
+		info, err = cli.API.UpdateOneID(id).
 			SetDeletedAt(uint32(time.Now().Unix())).
 			Save(_ctx)
 		return err
