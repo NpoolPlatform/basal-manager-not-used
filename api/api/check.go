@@ -66,6 +66,7 @@ func validate(info *npool.APIReq) error { //nolint
 
 func validateMany(infos []*npool.APIReq) error {
 	keys := map[string]struct{}{}
+	services := map[string]struct{}{}
 
 	for _, info := range infos {
 		if err := validate(info); err != nil {
@@ -84,6 +85,11 @@ func validateMany(infos []*npool.APIReq) error {
 		}
 
 		keys[key] = struct{}{}
+		services[info.GetServiceName()] = struct{}{}
+	}
+
+	if len(services) > 1 {
+		return fmt.Errorf("infos is invalid")
 	}
 
 	return nil
