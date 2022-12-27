@@ -110,11 +110,6 @@ func (s *Server) UpdateAPI(ctx context.Context, in *npool.UpdateAPIRequest) (*np
 		return &npool.UpdateAPIResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	err = validate(in.GetInfo())
-	if err != nil {
-		return &npool.UpdateAPIResponse{}, err
-	}
-
 	span = commontracer.TraceInvoker(span, "api", "crud", "Update")
 
 	info, err := crud.Update(ctx, in.GetInfo())
