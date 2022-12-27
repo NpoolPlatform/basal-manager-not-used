@@ -33,6 +33,7 @@ func validate(info *npool.APIReq) error { //nolint
 	switch info.GetMethod() {
 	case npool.Method_GET:
 	case npool.Method_POST:
+	case npool.Method_STREAM:
 	default:
 		logger.Sugar().Errorw("validate", "Method", info.Method)
 		return fmt.Errorf("method is invalid")
