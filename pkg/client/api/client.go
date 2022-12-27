@@ -66,6 +66,22 @@ func CreateAPIs(ctx context.Context, in []*npool.APIReq) ([]*npool.API, error) {
 	return infos.([]*npool.API), nil
 }
 
+func UpdateAPI(ctx context.Context, in *npool.APIReq) (*npool.API, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+		resp, err := cli.UpdateAPI(ctx, &npool.UpdateAPIRequest{
+			Info: in,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("fail update api: %v", err)
+		}
+		return resp.GetInfo(), nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("fail update api: %v", err)
+	}
+	return info.(*npool.API), nil
+}
+
 func GetAPI(ctx context.Context, id string) (*npool.API, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.GetAPI(ctx, &npool.GetAPIRequest{
