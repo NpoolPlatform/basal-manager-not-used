@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	entgo.io/ent v0.11.2
-	github.com/NpoolPlatform/go-service-framework v0.0.0-20220927113434-7c153f087a8c
+	github.com/NpoolPlatform/go-service-framework v0.0.0-20221102072657-7fcc5e6f1012
 	github.com/NpoolPlatform/libent-cruder v0.0.0-20220621110548-8f3f8049ecc5
 	github.com/NpoolPlatform/message v0.0.0-20221226140753-cae0c61b1d67
 	github.com/google/uuid v1.3.0
