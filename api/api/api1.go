@@ -91,6 +91,43 @@ func (s *Server) CreateAPIs(ctx context.Context, in *npool.CreateAPIsRequest) (*
 	}, nil
 }
 
+func (s *Server) UpdateAPI(ctx context.Context, in *npool.UpdateAPIRequest) (*npool.UpdateAPIResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateAPI")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in.GetInfo())
+
+	if _, err := uuid.Parse(in.GetInfo().GetID()); err != nil {
+		return &npool.UpdateAPIResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	err = validate(in.GetInfo())
+	if err != nil {
+		return &npool.UpdateAPIResponse{}, err
+	}
+
+	span = commontracer.TraceInvoker(span, "api", "crud", "Update")
+
+	info, err := crud.Update(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorf("fail update api: %v", err.Error())
+		return &npool.UpdateAPIResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.UpdateAPIResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}
+
 func (s *Server) GetAPI(ctx context.Context, in *npool.GetAPIRequest) (*npool.GetAPIResponse, error) {
 	var err error
 
