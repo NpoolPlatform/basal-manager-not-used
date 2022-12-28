@@ -2,6 +2,8 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/basal-manager/pkg/db/mixin"
 	"github.com/google/uuid"
@@ -17,6 +19,12 @@ type API struct {
 func (API) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
+	}
+}
+
+func (API) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "apis"},
 	}
 }
 

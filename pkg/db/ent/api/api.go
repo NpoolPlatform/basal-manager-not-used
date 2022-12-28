@@ -37,7 +37,7 @@ const (
 	// FieldDepracated holds the string denoting the depracated field in the database.
 	FieldDepracated = "depracated"
 	// Table holds the table name of the api in the database.
-	Table = "ap_is"
+	Table = "apis"
 )
 
 // Columns holds all SQL columns for api fields.
