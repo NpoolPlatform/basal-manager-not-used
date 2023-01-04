@@ -229,7 +229,7 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.APIQuery, error) {
 	}
 	if conds.Exported != nil {
 		switch conds.GetExported().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(api.Exported(conds.GetExported().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid api field")
@@ -237,7 +237,7 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.APIQuery, error) {
 	}
 	if conds.Depracated != nil {
 		switch conds.GetDepracated().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(api.Depracated(conds.GetDepracated().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid api field")
