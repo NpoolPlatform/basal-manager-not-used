@@ -243,6 +243,18 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.APIQuery, error) {
 			return nil, fmt.Errorf("invalid api field")
 		}
 	}
+	if len(conds.GetIDs().GetValue()) > 0 {
+		ids := []uuid.UUID{}
+		for _, id := range conds.GetIDs().GetValue() {
+			ids = append(ids, uuid.MustParse(id))
+		}
+		switch conds.GetIDs().GetOp() {
+		case cruder.IN:
+			stm.Where(api.IDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid api field")
+		}
+	}
 	return stm, nil
 }
 
