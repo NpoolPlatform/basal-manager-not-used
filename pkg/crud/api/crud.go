@@ -185,7 +185,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.API, error) {
 	return info, nil
 }
 
-func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.APIQuery, error) {
+func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.APIQuery, error) { //nolint
 	stm := cli.API.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
