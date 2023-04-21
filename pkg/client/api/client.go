@@ -181,3 +181,19 @@ func CountAPIs(ctx context.Context, conds *npool.Conds) (uint32, error) {
 	}
 	return infos.(uint32), nil
 }
+
+func DeleteAPI(ctx context.Context, id string) (*npool.API, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+		resp, err := cli.DeleteAPI(ctx, &npool.DeleteAPIRequest{
+			ID: id,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("fail delete api: %v", err)
+		}
+		return resp.GetInfo(), nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("fail delete api: %v", err)
+	}
+	return info.(*npool.API), nil
+}

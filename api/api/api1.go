@@ -299,3 +299,41 @@ func (s *Server) CountAPIs(ctx context.Context, in *npool.CountAPIsRequest) (*np
 		Info: total,
 	}, nil
 }
+
+func (s *Server) DeleteAPI(ctx context.Context, in *npool.DeleteAPIRequest) (*npool.DeleteAPIResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "DeleteAPI")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = commontracer.TraceID(span, in.GetID())
+
+	id, err := uuid.Parse(in.GetID())
+	if err != nil {
+		return &npool.DeleteAPIResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	span = commontracer.TraceInvoker(span, "api", "crud", "Delete")
+
+	api, err := s.GetAPI(ctx, &npool.GetAPIRequest{ID: in.ID})
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = crud.Delete(ctx, id)
+	if err != nil {
+		logger.Sugar().Errorf("fail check api: %v", err)
+		return &npool.DeleteAPIResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.DeleteAPIResponse{
+		Info: api.GetInfo(),
+	}, nil
+}
